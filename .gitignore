@@ -3,5 +3,5 @@
 /node_modules
 
 #dotenv
-.env*.local
+.env
 
