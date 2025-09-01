@@ -15,12 +15,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.Error(w, http.StatusUnprocessableEntity, err)
+		return
 	}
 
 	var user models.User
 
 	if err = json.Unmarshal(req, &user); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = user.Validations(); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
 	}
 
 	db, err := database.Connect()
@@ -33,6 +40,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.ID, err = repository.Create(user)
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	responses.JSON(w, http.StatusCreated, user)
