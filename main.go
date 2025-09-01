@@ -1,6 +1,7 @@
 package main
 
 import (
+	"api/src/config"
 	"api/src/routes"
 	"fmt"
 	"log"
@@ -8,10 +9,9 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting API")
+	config.HandleConfig()
 
 	r := routes.HandleRoutes()
-
-	log.Println("Server running on port 5000")
-	log.Fatal(http.ListenAndServe(":5000", r))
+	fmt.Printf("Server running on port %d", config.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }
