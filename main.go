@@ -11,7 +11,7 @@ import (
 func main() {
 	config.HandleConfig()
 
-	r := routes.HandleRoutes()
+	r := routes.HandlerRoutes()
 	fmt.Printf("Server running on port %d", config.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }

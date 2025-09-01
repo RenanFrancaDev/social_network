@@ -4,8 +4,8 @@ import (
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositories"
+	"api/src/responses"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,27 +14,28 @@ import (
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalf("[controllers] [msg: Error in the request %v]", err)
+		responses.Error(w, http.StatusUnprocessableEntity, err)
 	}
 
 	var user models.User
 
 	if err = json.Unmarshal(req, &user); err != nil {
-		log.Fatalf("[controllers] [msg: Error in unmarshal %v]", err)
+		responses.Error(w, http.StatusBadRequest, err)
 	}
 
 	db, err := database.Connect()
 	if err != nil {
-		log.Fatalf("[controllers] [msg: Error in database connect %v]", err)
+		responses.Error(w, http.StatusInternalServerError, err)
 	}
+	defer db.Close()
 
 	repository := repositories.NewUsersRepository(db)
-	userID, err := repository.Create(user)
+	user.ID, err = repository.Create(user)
 	if err != nil {
-		log.Fatalf("[controllers] [msg: Error to create user repository %v]", err)
+		responses.Error(w, http.StatusInternalServerError, err)
 	}
 
-	w.Write([]byte(fmt.Sprintf("Id inserido: %v", userID)))
+	responses.JSON(w, http.StatusCreated, user)
 
 }
 
@@ -46,6 +47,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("[controllers] [msg: Error in database connect %v]", err)
 		http.Error(w, "Database connection error", http.StatusInternalServerError)
 	}
+	defer db.Close()
 
 	var users []models.User
 

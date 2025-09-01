@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func HandleRoutes() *mux.Router {
+func HandlerRoutes() *mux.Router {
 	r := mux.NewRouter()
 	return Configure(r)
 }
