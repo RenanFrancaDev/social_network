@@ -7,7 +7,6 @@ import (
 	"api/src/responses"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -55,9 +54,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	db, err := database.Connect()
 	if err != nil {
-		log.Printf("Request received: %s %s", r.Method, r.URL.Path)
-		log.Fatalf("[controllers] [msg: Error in database connect %v]", err)
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		responses.Error(w, http.StatusInternalServerError, err)
 	}
 	defer db.Close()
 
@@ -66,16 +63,14 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	repository := repositories.NewUsersRepository(db)
 	users, err = repository.GetUsers()
 	if err != nil {
-		log.Fatalf("[controllers] [msg: Error to create user repository %v]", err)
-		http.Error(w, "Error fetching users", http.StatusInternalServerError)
+		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
 	if err = json.NewEncoder(w).Encode(users); err != nil {
-		log.Printf("[controllers] Error encoding JSON: %v", err)
-		http.Error(w, "Error generating response", http.StatusInternalServerError)
+		responses.Error(w, http.StatusInternalServerError, err)
 	}
 
 }
@@ -172,5 +167,27 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Funcionou"))
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["userID"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepository(db)
+	err = repository.DeleteUser(userID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, "Usuário Deletado com Sucesso")
+
 }
