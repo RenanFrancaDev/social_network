@@ -3,6 +3,7 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -40,7 +41,7 @@ func (u users) Create(user models.User) (uint64, error) {
 	return uint64(lastId), nil
 }
 
-func (u users) GetUsersRepository() ([]models.User, error) {
+func (u users) GetUsers() ([]models.User, error) {
 	statement, err := u.db.Prepare(
 		"SELECT id, name, nickname, email, createdAt FROM users",
 	)
@@ -69,5 +70,51 @@ func (u users) GetUsersRepository() ([]models.User, error) {
 	}
 
 	return users, nil
+
+}
+
+func (u users) SearchUsers(nameOrNick string) ([]models.User, error) {
+	nameOrNick = fmt.Sprintf("%%%s%%", nameOrNick) //%nameOrNick%
+
+	rows, err := u.db.Query("select id, name, nickname, email, createdAt from users where nickname LIKE ? or name LIKE ?", nameOrNick, nameOrNick)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (u *users) GetUser(id uint64) (models.User, error) {
+
+	var user models.User
+
+	err := u.db.QueryRow("select id, name, nickname, email, createdAt from users where id = ?", id).Scan(
+		&user.ID,
+		&user.Name,
+		&user.Nickname,
+		&user.Email,
+		&user.CreatedAt,
+	)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 
 }

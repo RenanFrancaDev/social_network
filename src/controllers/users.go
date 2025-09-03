@@ -9,6 +9,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +64,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 
 	repository := repositories.NewUsersRepository(db)
-	users, err = repository.GetUsersRepository()
+	users, err = repository.GetUsers()
 	if err != nil {
 		log.Fatalf("[controllers] [msg: Error to create user repository %v]", err)
 		http.Error(w, "Error fetching users", http.StatusInternalServerError)
@@ -76,8 +80,51 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func SearchUsers(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepository(db)
+	users, err := repository.SearchUsers(nameOrNick)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)
+}
+
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Funcionou"))
+	params := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(params["userID"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepository(db)
+	user, err := repository.GetUser(userID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, user)
+
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
