@@ -118,3 +118,19 @@ func (u *users) GetUser(id uint64) (models.User, error) {
 	return user, nil
 
 }
+
+func (u *users) UpdateUser(id uint64, user models.User) (models.User, error) {
+
+	statement, err := u.db.Prepare("update users set name = ?, nickname = ?, email = ? where id = ?")
+	if err != nil {
+		return models.User{}, err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(user.Name, user.Nickname, user.Email, id)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}

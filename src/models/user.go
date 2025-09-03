@@ -15,8 +15,8 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
-func (u *User) Validations() error {
-	if err := u.notEmpty(); err != nil {
+func (u *User) Validations(step string) error {
+	if err := u.notEmpty(step); err != nil {
 		return err
 	}
 
@@ -25,7 +25,7 @@ func (u *User) Validations() error {
 	return nil
 }
 
-func (u *User) notEmpty() error {
+func (u *User) notEmpty(step string) error {
 	if u.Name == "" {
 		return errors.New("Name is required")
 	}
@@ -34,7 +34,7 @@ func (u *User) notEmpty() error {
 		return errors.New("Nickname is required")
 	}
 
-	if u.Password == "" {
+	if step == "signup" && u.Password == "" {
 		return errors.New("Password is required")
 	}
 
