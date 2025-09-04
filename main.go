@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"api/src/config"
+	"api/src/routes"
+	"fmt"
+	"log"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Starting API")
+	config.HandleConfig()
+
+	r := routes.HandlerRoutes()
+	fmt.Printf("Server running on port %d", config.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }
