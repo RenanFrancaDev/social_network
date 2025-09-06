@@ -46,14 +46,10 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := utils.CreateToken(registeredUser.ID)
+	token, err := utils.CreateToken(registeredUser.ID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+	}
 	w.Write([]byte(token))
-
-	// token, err := repository.Signin(user)
-	// if err != nil {
-	// 	responses.Error(w, http.StatusInternalServerError, err)
-	// }
-
-	// responses.JSON(w, http.StatusOK, err)
 
 }
