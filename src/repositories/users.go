@@ -112,6 +112,17 @@ func (u *users) GetUser(id uint64) (models.User, error) {
 
 }
 
+func (u *users) GetUserByEmail(userEmail string) (models.User, error) {
+
+	var user models.User
+	err := u.db.QueryRow("select id, password from users where email = ?", userEmail).Scan(&user.ID, &user.Password)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
+
 func (u *users) UpdateUser(id uint64, user models.User) (models.User, error) {
 
 	statement, err := u.db.Prepare("update users set name = ?, nickname = ?, email = ? where id = ?")
