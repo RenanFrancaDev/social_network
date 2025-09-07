@@ -22,19 +22,19 @@ var userRoutes = []Router{
 		URI:         "/searchUsers",
 		Method:      http.MethodGet,
 		Function:    controllers.SearchUsers,
-		RequireAuth: false,
+		RequireAuth: true,
 	},
 	{
 		URI:         "/user/{userID}",
 		Method:      http.MethodGet,
 		Function:    controllers.GetUser,
-		RequireAuth: false,
+		RequireAuth: true,
 	},
 	{
 		URI:         "/user/{userID}",
 		Method:      http.MethodPut,
 		Function:    controllers.UpdateUser,
-		RequireAuth: false,
+		RequireAuth: true,
 	},
 	{
 		URI:         "/user/{userID}",

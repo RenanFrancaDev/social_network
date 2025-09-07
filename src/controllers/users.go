@@ -5,7 +5,9 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"api/src/responses"
+	"api/src/utils"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -129,6 +131,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//users can only do their own update
+	tokenUserID, err := utils.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+	if userID != tokenUserID {
+		responses.Error(w, http.StatusForbidden, errors.New("it is not possible to update a user that is not yours"))
+		return
+	}
+	// --------- //
+
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.Error(w, http.StatusUnprocessableEntity, err)
@@ -173,6 +187,18 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
 	}
+
+	//users can only do their own update
+	tokenUserID, err := utils.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+	if userID != tokenUserID {
+		responses.Error(w, http.StatusForbidden, errors.New("it is not possible to update a user that is not yours"))
+		return
+	}
+	// --------- //
 
 	db, err := database.Connect()
 	if err != nil {

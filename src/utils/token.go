@@ -38,8 +38,6 @@ func ValidateToken(r *http.Request) error {
 
 func extractToken(r *http.Request) string {
 	token := r.Header.Get("Authorization")
-	fmt.Printf("toke %s", token)
-
 	parts := strings.Split(token, " ")
 
 	if len(parts) == 2 && parts[0] == "Bearer" {
@@ -56,4 +54,23 @@ func returnVerificationKey(token *jwt.Token) (interface{}, error) {
 	}
 
 	return config.SecretKey, nil
+}
+
+func ExtractUserID(r *http.Request) (uint64, error) {
+	tokenString := extractToken(r)
+	token, err := jwt.Parse(tokenString, returnVerificationKey)
+	if err != nil {
+		return 0, err
+	}
+
+	//mapClaims return interface and UserId turned a float, ites necessery extract and convert to uint 64
+	if permissions, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID, ok := permissions["userID"].(float64)
+		if !ok {
+			return 0, errors.New("userID is not a float")
+		}
+		return uint64(userID), nil
+	}
+
+	return 0, errors.New("invalid token")
 }
