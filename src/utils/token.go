@@ -38,9 +38,12 @@ func ValidateToken(r *http.Request) error {
 
 func extractToken(r *http.Request) string {
 	token := r.Header.Get("Authorization")
+	fmt.Printf("toke %s", token)
 
-	if len(strings.Split(token, "")) == 2 {
-		return strings.Split(token, "")[1]
+	parts := strings.Split(token, " ")
+
+	if len(parts) == 2 && parts[0] == "Bearer" {
+		return parts[1] // Retorna só o token
 	}
 	return ""
 }
@@ -49,7 +52,7 @@ func extractToken(r *http.Request) string {
 func returnVerificationKey(token *jwt.Token) (interface{}, error) {
 	//TODO - ENTENDERRR o !ok
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, fmt.Errorf("Signature Method Unexpected! %v", token.Header["alg"])
+		return nil, fmt.Errorf("signature method unexpected! %v", token.Header["alg"])
 	}
 
 	return config.SecretKey, nil
