@@ -153,3 +153,18 @@ func (u *users) DeleteUser(id uint64) error {
 
 	return nil
 }
+
+func (u *users) FollowUser(followerId uint64, userId uint64) error {
+	statement, err := u.db.Prepare("insert ignore into followers (user_id, follower_id) values (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(userId, followerId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

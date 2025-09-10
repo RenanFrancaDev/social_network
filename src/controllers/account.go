@@ -8,7 +8,6 @@ import (
 	"api/src/utils"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -41,7 +40,6 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = utils.CheckPassword(registeredUser.Password, user.Password); err != nil {
-		log.Printf("hash: %s sem HAsh: %s", registeredUser.Password, user.Password)
 		responses.Error(w, http.StatusUnauthorized, err)
 		return
 	}
