@@ -12,6 +12,7 @@ import (
 var (
 	StringConectionDB = ""
 	Port              = 0
+	SecretKey         []byte
 )
 
 func HandleConfig() {
@@ -31,4 +32,6 @@ func HandleConfig() {
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"))
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
