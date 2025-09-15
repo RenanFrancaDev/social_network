@@ -183,3 +183,34 @@ func (u *users) UnfollowUser(followerId uint64, userId uint64) error {
 
 	return nil
 }
+
+func (u *users) GetFollowers(userID uint64) ([]models.User, error) {
+
+	rows, err := u.db.Query(`
+	select users.id, users.name, users.nickname, users.email, users.createdAt
+	from users inner join followers on users.id = follower_id
+	where followers.user_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
