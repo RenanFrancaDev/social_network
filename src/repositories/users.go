@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"api/src/models"
+	"api/src/utils"
 	"database/sql"
 	"fmt"
 )
@@ -188,7 +189,7 @@ func (u *users) GetFollowers(userID uint64) ([]models.User, error) {
 
 	rows, err := u.db.Query(`
 	select users.id, users.name, users.nickname, users.email, users.createdAt
-	from users inner join followers on users.id = follower_id
+	from users inner join followers on users.id = followers.follower_id
 	where followers.user_id = ?
 	`, userID)
 	if err != nil {
@@ -213,4 +214,70 @@ func (u *users) GetFollowers(userID uint64) ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u *users) GetFollowing(userID uint64) ([]models.User, error) {
+
+	rows, err := u.db.Query(`
+	select users.id, users.name, users.nickname, users.email, users.createdAt
+	from users inner join followers on users.id = followers.user_id
+	where followers.follower_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (u *users) UpdatePassword(userID uint64, currentPassword string, newPassword string) error {
+
+	var storedPassword string
+	err := u.db.QueryRow("SELECT password FROM users WHERE id = ?", userID).Scan(&storedPassword)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("current %s", currentPassword)
+	fmt.Printf("stored %s", storedPassword)
+	if err = utils.CheckPassword(storedPassword, currentPassword); err != nil {
+		fmt.Print("ENTROU AQUI")
+		return err
+	}
+
+	statement, err := u.db.Prepare("Update users SET password = ? where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	newHash, err := utils.Hash(newPassword)
+	if err != nil {
+		return err
+	}
+
+	_, err = statement.Exec(string(newHash), userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

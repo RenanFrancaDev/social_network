@@ -55,9 +55,23 @@ var userRoutes = []Router{
 		RequireAuth: true,
 	},
 	{
+		//Who follow that user
 		URI:         "/users/{userID}/followers",
 		Method:      http.MethodGet,
 		Function:    controllers.GetFollowers,
+		RequireAuth: true,
+	},
+	{
+		//Who that user is following
+		URI:         "/users/{userID}/following",
+		Method:      http.MethodGet,
+		Function:    controllers.GetFollowing,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/users/update-password",
+		Method:      http.MethodPost,
+		Function:    controllers.UpdatePassword,
 		RequireAuth: true,
 	},
 }
