@@ -255,10 +255,7 @@ func (u *users) UpdatePassword(userID uint64, currentPassword string, newPasswor
 		return err
 	}
 
-	fmt.Printf("current %s", currentPassword)
-	fmt.Printf("stored %s", storedPassword)
 	if err = utils.CheckPassword(storedPassword, currentPassword); err != nil {
-		fmt.Print("ENTROU AQUI")
 		return err
 	}
 
