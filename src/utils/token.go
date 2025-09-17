@@ -41,7 +41,7 @@ func extractToken(r *http.Request) string {
 	parts := strings.Split(token, " ")
 
 	if len(parts) == 2 && parts[0] == "Bearer" {
-		return parts[1] // Retorna só o token
+		return parts[1]
 	}
 	return ""
 }

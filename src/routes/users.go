@@ -42,4 +42,36 @@ var userRoutes = []Router{
 		Function:    controllers.DeleteUser,
 		RequireAuth: false,
 	},
+	{
+		URI:         "/users/{userID}/follow",
+		Method:      http.MethodPost,
+		Function:    controllers.FollowUser,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/users/{userID}/unfollow",
+		Method:      http.MethodDelete,
+		Function:    controllers.UnfollowUser,
+		RequireAuth: true,
+	},
+	{
+		//Who follow that user
+		URI:         "/users/{userID}/followers",
+		Method:      http.MethodGet,
+		Function:    controllers.GetFollowers,
+		RequireAuth: true,
+	},
+	{
+		//Who that user is following
+		URI:         "/users/{userID}/following",
+		Method:      http.MethodGet,
+		Function:    controllers.GetFollowing,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/users/update-password",
+		Method:      http.MethodPost,
+		Function:    controllers.UpdatePassword,
+		RequireAuth: true,
+	},
 }
