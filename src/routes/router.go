@@ -17,12 +17,13 @@ type Router struct {
 // Configure routes into router (mux)
 func Configure(r *mux.Router) *mux.Router {
 	routes := append(userRoutes, accountRoutes...)
+	routes = append(routes, publicationRoutes...)
 
 	for _, route := range routes {
 
 		if route.RequireAuth {
 			r.HandleFunc(route.URI, middlewares.Logger(middlewares.Authentication(route.Function))).Methods(route.Method)
-		}else {
+		} else {
 			r.HandleFunc(route.URI, middlewares.Logger(route.Function)).Methods(route.Method)
 		}
 
