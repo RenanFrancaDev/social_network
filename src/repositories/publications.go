@@ -64,3 +64,25 @@ func (p publications) GetPublications() ([]models.Publication, error){
 	return publications, nil
 
 }
+
+func (p publications) GetPublication(publicationID uint64) (models.Publication, error){
+	
+	var publication models.Publication 
+
+	err := p.db.QueryRow(
+		"Select id, title, content, author_id, likes, createdAt from publications where id = ? ", publicationID).Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Content,
+			&publication.AuthorID,
+			&publication.Likes,
+			&publication.CreatedAt,
+		)
+	if err != nil {
+		return models.Publication{}, err
+	}
+
+	return publication, nil
+
+
+}
