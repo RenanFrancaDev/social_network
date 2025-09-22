@@ -31,6 +31,11 @@ func CreatePublicaton(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = publication.Prepare(); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return 
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
@@ -47,7 +52,20 @@ func CreatePublicaton(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, publicationID)
 
 }
-func CreatePublicatons(w http.ResponseWriter, r *http.Request) {
+func GetPublicatons(w http.ResponseWriter, r *http.Request) {
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepositoryPulications(db)
+	publications, err := repository.GetPublications()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+	}
+
+	responses.JSON(w, http.StatusOK, publications)
 
 }
 func GetPublication(w http.ResponseWriter, r *http.Request) {

@@ -14,8 +14,8 @@ var publicationRoutes = []Router{
 	},
 	{
 		URI:         "/publications",
-		Method:      http.MethodPost,
-		Function:    controllers.CreatePublicatons,
+		Method:      http.MethodGet,
+		Function:    controllers.GetPublicatons,
 		RequireAuth: true,
 	},
 	{

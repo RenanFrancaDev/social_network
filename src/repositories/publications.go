@@ -40,3 +40,27 @@ func (p publications) Create(userID uint64, publication models.Publication) (uin
 	return uint64(lastId), nil
 
 }
+
+func (p publications) GetPublications() ([]models.Publication, error){
+	rows, err := p.db.Query(
+		"Select id, title, content, author_id, likes, createdAt from publications",
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var publications []models.Publication
+
+	for rows.Next(){
+		var publication models.Publication
+		if err = rows.Scan(&publication.ID, &publication.Title, &publication.Content, &publication.AuthorID, &publication.Likes, &publication.CreatedAt); err != nil {
+			return nil, err
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
+
+}
