@@ -86,3 +86,19 @@ func (p publications) GetPublication(publicationID uint64) (models.Publication, 
 
 
 }
+
+func (p publications) UpdatePublication(publicationID uint64, publication models.Publication) (models.Publication, error){
+
+	statement, err := p.db.Prepare("update publications set title = ?, content = ? where id = ?")
+	if err != nil {
+		return models.Publication{}, err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(publication.Title, publication.Content, publicationID)
+	if err != nil {
+		return models.Publication{}, err
+	}
+
+	return publication, nil
+}
