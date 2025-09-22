@@ -68,12 +68,14 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}
+	
+	// w.Header().Set("Content-Type", "application/json")
 
-	w.Header().Set("Content-Type", "application/json")
+	// if err = json.NewEncoder(w).Encode(users); err != nil {
+	// 	responses.Error(w, http.StatusInternalServerError, err)
+	// }
 
-	if err = json.NewEncoder(w).Encode(users); err != nil {
-		responses.Error(w, http.StatusInternalServerError, err)
-	}
+	responses.JSON(w, http.StatusOK, users)
 
 }
 

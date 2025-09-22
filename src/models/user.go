@@ -32,19 +32,19 @@ func (u *User) Validations(step string) error {
 
 func (u *User) notEmpty(step string) error {
 	if u.Name == "" {
-		return errors.New("Name is required")
+		return errors.New("name is required")
 	}
 
 	if u.Nickname == "" {
-		return errors.New("Nickname is required")
+		return errors.New("nickname is required")
 	}
 
 	if step == "signup" && u.Password == "" {
-		return errors.New("Password is required")
+		return errors.New("password is required")
 	}
 
 	if u.Email == "" {
-		return errors.New("Email is required")
+		return errors.New("email is required")
 	}
 
 	if err := checkmail.ValidateFormat(u.Email); err != nil {
