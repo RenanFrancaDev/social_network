@@ -87,6 +87,7 @@ func (p publications) GetPublication(publicationID uint64) (models.Publication, 
 
 }
 
+// TODO - createdAt return -> verification in insomnia
 func (p publications) UpdatePublication(publicationID uint64, publication models.Publication) (models.Publication, error){
 
 	statement, err := p.db.Prepare("update publications set title = ?, content = ? where id = ?")
@@ -101,4 +102,20 @@ func (p publications) UpdatePublication(publicationID uint64, publication models
 	}
 
 	return publication, nil
+}
+
+//TODO - treatment if the publication id is not exist
+func (p publications) DeletePublication(publicationID uint64) error{
+	statement, err := p.db.Prepare("delete from publications where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(publicationID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

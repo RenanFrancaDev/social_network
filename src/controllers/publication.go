@@ -126,6 +126,11 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = publication.Prepare(); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return 
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
@@ -156,5 +161,28 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 
 }
 func DeletePublication(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepositoryPulications(db)
+	err = repository.DeletePublication(publicationID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, "publication deleted")
 
 }
