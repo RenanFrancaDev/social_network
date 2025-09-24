@@ -37,7 +37,7 @@ func CreatePublicaton(w http.ResponseWriter, r *http.Request) {
 
 	if err = publication.Prepare(); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
-		return 
+		return
 	}
 
 	db, err := database.Connect()
@@ -74,7 +74,7 @@ func GetPublicatons(w http.ResponseWriter, r *http.Request) {
 }
 func GetPublication(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	publicationID, err := strconv.ParseUint(params["publicationID"], 10, 64)
 	if err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
@@ -99,20 +99,19 @@ func GetPublication(w http.ResponseWriter, r *http.Request) {
 }
 func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 
-	
 	params := mux.Vars(r)
-	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	publicationID, err := strconv.ParseUint(params["publicationID"], 10, 64)
 	if err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
 	}
-	
+
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.Error(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	
+
 	userID, err := utils.ExtractUserID(r)
 	if err != nil {
 		responses.Error(w, http.StatusUnauthorized, err)
@@ -128,7 +127,7 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 
 	if err = publication.Prepare(); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
-		return 
+		return
 	}
 
 	db, err := database.Connect()
@@ -145,11 +144,10 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userID != publishedPublication.AuthorID{
+	if userID != publishedPublication.AuthorID {
 		responses.Error(w, http.StatusForbidden, errors.New("it is not possible to update a publication that is not yours"))
 		return
 	}
-
 
 	publicationChanged, err := repository.UpdatePublication(publicationID, publication)
 	if err != nil {
@@ -163,7 +161,7 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 func DeletePublication(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
-	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	publicationID, err := strconv.ParseUint(params["publicationID"], 10, 64)
 	if err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
@@ -184,5 +182,31 @@ func DeletePublication(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responses.JSON(w, http.StatusOK, "publication deleted")
+
+}
+
+func GetPublicationsByUserID(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["userID"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepositoryPulications(db)
+	userPublications, err := repository.GetPublicationsByUserID(userID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, userPublications)
 
 }

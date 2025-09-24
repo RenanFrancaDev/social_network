@@ -41,7 +41,7 @@ func (p publications) Create(userID uint64, publication models.Publication) (uin
 
 }
 
-func (p publications) GetPublications() ([]models.Publication, error){
+func (p publications) GetPublications() ([]models.Publication, error) {
 	rows, err := p.db.Query(
 		"Select id, title, content, author_id, likes, createdAt from publications",
 	)
@@ -52,7 +52,7 @@ func (p publications) GetPublications() ([]models.Publication, error){
 
 	var publications []models.Publication
 
-	for rows.Next(){
+	for rows.Next() {
 		var publication models.Publication
 		if err = rows.Scan(&publication.ID, &publication.Title, &publication.Content, &publication.AuthorID, &publication.Likes, &publication.CreatedAt); err != nil {
 			return nil, err
@@ -65,30 +65,29 @@ func (p publications) GetPublications() ([]models.Publication, error){
 
 }
 
-func (p publications) GetPublication(publicationID uint64) (models.Publication, error){
-	
-	var publication models.Publication 
+func (p publications) GetPublication(publicationID uint64) (models.Publication, error) {
+
+	var publication models.Publication
 
 	err := p.db.QueryRow(
 		"Select id, title, content, author_id, likes, createdAt from publications where id = ? ", publicationID).Scan(
-			&publication.ID,
-			&publication.Title,
-			&publication.Content,
-			&publication.AuthorID,
-			&publication.Likes,
-			&publication.CreatedAt,
-		)
+		&publication.ID,
+		&publication.Title,
+		&publication.Content,
+		&publication.AuthorID,
+		&publication.Likes,
+		&publication.CreatedAt,
+	)
 	if err != nil {
 		return models.Publication{}, err
 	}
 
 	return publication, nil
 
-
 }
 
 // TODO - createdAt return -> verification in insomnia
-func (p publications) UpdatePublication(publicationID uint64, publication models.Publication) (models.Publication, error){
+func (p publications) UpdatePublication(publicationID uint64, publication models.Publication) (models.Publication, error) {
 
 	statement, err := p.db.Prepare("update publications set title = ?, content = ? where id = ?")
 	if err != nil {
@@ -104,8 +103,8 @@ func (p publications) UpdatePublication(publicationID uint64, publication models
 	return publication, nil
 }
 
-//TODO - treatment if the publication id is not exist
-func (p publications) DeletePublication(publicationID uint64) error{
+// TODO - treatment if the publication id is not exist
+func (p publications) DeletePublication(publicationID uint64) error {
 	statement, err := p.db.Prepare("delete from publications where id = ?")
 	if err != nil {
 		return err
@@ -118,4 +117,39 @@ func (p publications) DeletePublication(publicationID uint64) error{
 	}
 
 	return nil
+}
+
+func (p publications) GetPublicationsByUserID(userID uint64) ([]models.Publication, error) {
+
+	rows, err := p.db.Query(`
+        SELECT p.*, u.nickname
+        FROM publications p
+		join users u on u.id = p.author_id
+        WHERE author_id = ?
+    `, userID)
+	if err != nil {
+		fmt.Print("ERRRO AKU")
+		return nil, err
+	}
+	defer rows.Close()
+
+	var publications []models.Publication
+
+	for rows.Next() {
+		var publication models.Publication
+		if err = rows.Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Content,
+			&publication.AuthorID,
+			&publication.Likes,
+			&publication.CreatedAt,
+			&publication.AuthorNick,
+		); err != nil {
+			return nil, err
+		}
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
 }
