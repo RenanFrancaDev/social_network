@@ -12,6 +12,13 @@ type ErrorResponse struct {
 
 // return response in JSON
 func JSON(w http.ResponseWriter, statusCode int, dados interface{}) {
+
+
+	if statusCode == http.StatusNoContent {
+        w.WriteHeader(statusCode)
+        return
+    }
+
 	w.WriteHeader(statusCode)
 
 	if err := json.NewEncoder(w).Encode(dados); err != nil {

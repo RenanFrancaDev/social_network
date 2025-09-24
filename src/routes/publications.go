@@ -42,4 +42,17 @@ var publicationRoutes = []Router{
 		Function:    controllers.GetPublicationsByUserID,
 		RequireAuth: true,
 	},
+	{
+		URI:         "/publications/{publicationID}/like",
+		Method:      http.MethodPut,
+		Function:    controllers.LikePublication,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/publications/{publicationID}/unlike",
+		Method:      http.MethodPut,
+		Function:    controllers.UnlikePublication,
+		RequireAuth: true,
+	},
+	
 }

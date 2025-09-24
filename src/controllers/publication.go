@@ -210,3 +210,52 @@ func GetPublicationsByUserID(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, userPublications)
 
 }
+
+func LikePublication(w http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepositoryPulications(db)
+	err = repository.LikePublication(publicationID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, "publication liked")
+}
+func UnlikePublication(w http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	publicationID, err := strconv.ParseUint(params["publicationID"],10,64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepositoryPulications(db)
+	err = repository.UnlikePublication(publicationID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, "publication unliked")
+}

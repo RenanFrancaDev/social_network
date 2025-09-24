@@ -3,6 +3,7 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -152,4 +153,55 @@ func (p publications) GetPublicationsByUserID(userID uint64) ([]models.Publicati
 	}
 
 	return publications, nil
+}
+
+func (p publications) LikePublication(publicationID uint64) error{
+	statement, err := p.db.Prepare("update publications set likes = likes +1 where id = ?")
+	if err != nil{
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(publicationID)
+	if err != nil{
+		return err
+	}
+
+	  rowsAffected, err := result.RowsAffected()
+	  if err != nil {
+		  return err
+	  }
+  
+	  if rowsAffected == 0 {
+		  return errors.New("publication not found")
+	  }
+
+
+
+	return nil
+}
+
+func (p publications) UnlikePublication(publicationID uint64) error{
+	statement, err := p.db.Prepare("update publications set likes = likes -1 where id = ? and likes > 0")
+	if err != nil{
+		return err
+	}	
+	defer statement.Close()
+
+	result, err := statement.Exec(publicationID)
+	if err != nil{
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("publication not found")
+	}
+
+
+	return nil
 }
