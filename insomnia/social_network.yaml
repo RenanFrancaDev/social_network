@@ -1,0 +1,631 @@
+type: collection.insomnia.rest/5.0
+name: Social Network
+meta:
+  id: wrk_ff93698cf11a4fa58d5163554e8b851c
+  created: 1758559939387
+  modified: 1758735259974
+  description: ""
+collection:
+  - name: Users
+    meta:
+      id: fld_a048d7b450fb4330b07336e3f9b5712c
+      created: 1756244873682
+      modified: 1757013375727
+      sortKey: -1756244873682
+      description: ""
+    children:
+      - url: localhost:5000/users
+        name: Get All Users
+        meta:
+          id: req_60f2268518d5484296e10fdfa1b1a303
+          created: 1756244879937
+          modified: 1758567312906
+          isPrivate: false
+          description: ""
+          sortKey: -1756244926426
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/user/1
+        name: User
+        meta:
+          id: req_d53e4e1fbec941ce8ce9f10b804d0f87
+          created: 1756244976251
+          modified: 1756921941387
+          isPrivate: false
+          description: ""
+          sortKey: -1755369545073.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/user/5
+        name: Delete User
+        meta:
+          id: req_4769b85df10e40278c467e96dd3dfeea
+          created: 1756244985234
+          modified: 1756942368966
+          isPrivate: false
+          description: ""
+          sortKey: -1754931854397.25
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/user/1
+        name: Update User
+        meta:
+          id: req_16c240cd82c04fbaa362859106698777
+          created: 1756244996876
+          modified: 1757251685540
+          isPrivate: false
+          description: ""
+          sortKey: -1754713009059.125
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Renan",
+            	"nickname": "Craque di bola",
+            	"email":"renan350@email.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users
+        name: Create User
+        meta:
+          id: req_01ed069a704f4acd83140da14f017210
+          created: 1756245016799
+          modified: 1757246523400
+          isPrivate: false
+          description: ""
+          sortKey: -1756244926526
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email":"renan@email.com",
+            	"password":"123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/searchUsers?user=Renan
+        name: Search Users
+        meta:
+          id: req_4d97ce381a614a40b910fafa4f9782c0
+          created: 1756917995975
+          modified: 1756918011043
+          isPrivate: false
+          description: ""
+          sortKey: -1755807235749.75
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/5/follow
+        name: Follow User
+        meta:
+          id: req_b52eb600552f4cd8b767b8b9e62d12dc
+          created: 1757541757169
+          modified: 1757946880033
+          isPrivate: false
+          description: ""
+          sortKey: -1754713008959.125
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email":"renan@email.com",
+            	"password":"123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/5/unfollow
+        name: Unfollow User
+        meta:
+          id: req_ffd89c6b2af84542968dbb00e5e24c92
+          created: 1757545404518
+          modified: 1757946881996
+          isPrivate: false
+          description: ""
+          sortKey: -1754713008859.125
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email":"renan@email.com",
+            	"password":"123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/1/followers
+        name: Get Followers
+        meta:
+          id: req_7dbdde34bc834fc8833b5dad36217aac
+          created: 1757946894844
+          modified: 1758066467592
+          isPrivate: false
+          description: ""
+          sortKey: -1754713008759.125
+        method: GET
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email":"renan@email.com",
+            	"password":"123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/1/following
+        name: Get Following
+        meta:
+          id: req_e89479f63ae444a099855897c70229b4
+          created: 1758066277472
+          modified: 1758066325717
+          isPrivate: false
+          description: ""
+          sortKey: -1754603586240.0625
+        method: GET
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email":"renan@email.com",
+            	"password":"123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Account
+    meta:
+      id: fld_b0784d2031e8417d91959b68deffe8e4
+      created: 1757013380849
+      modified: 1758496291135
+      sortKey: -1757013380849
+      description: ""
+    children:
+      - url: localhost:5000/signin
+        name: Signin
+        meta:
+          id: req_80b53cd5d4cb458f8aef647ac649c209
+          created: 1757013385225
+          modified: 1758496311953
+          isPrivate: false
+          description: ""
+          sortKey: -1757013385225
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "email": "usuario1@email.com",
+                "password": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/update-password
+        name: Reset Password
+        meta:
+          id: req_e0483dea73f34a8fb6ecf54c89d708e0
+          created: 1758072494414
+          modified: 1758073389952
+          isPrivate: false
+          description: ""
+          sortKey: -1756629155875.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "currentPassword": "secret",
+                "newPassword": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Publications
+    meta:
+      id: fld_a6edf38d252c4a829e9938cecf08ac6d
+      created: 1758496114072
+      modified: 1758496114072
+      sortKey: -1758496114072
+      description: ""
+    children:
+      - url: localhost:5000/publications
+        name: Create Publication
+        meta:
+          id: req_870c10d0650242b896a971448759c3ff
+          created: 1758496102440
+          modified: 1758659018781
+          isPrivate: false
+          description: ""
+          sortKey: -1758496119755
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"title":"Titulo",
+            	"content":"Content testeeeee"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications
+        name: Get Publications
+        meta:
+          id: req_d41605acbc354f28b4e9195eebee8ec3
+          created: 1758566847070
+          modified: 1758733449992
+          isPrivate: false
+          description: ""
+          sortKey: -1757754752490
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications/2
+        name: Get Publication
+        meta:
+          id: req_7d06652f0a3f485fb532418486fdc5da
+          created: 1758570077357
+          modified: 1758734994586
+          isPrivate: false
+          description: ""
+          sortKey: -1757662081581.875
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications/1
+        name: Update Publication
+        meta:
+          id: req_57b86963dd0c43cd8e1584b5e0cd931b
+          created: 1758658717471
+          modified: 1758658949833
+          isPrivate: false
+          description: ""
+          sortKey: -1758125436122.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"title":"Alterei      ",
+            	"content":"    Content Alterada"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications/1
+        name: Delete Publication
+        meta:
+          id: req_2354cf8b9b05421d84276779cb13c00d
+          created: 1758659543145
+          modified: 1758659584977
+          isPrivate: false
+          description: ""
+          sortKey: -1757198727041.25
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications/2/like
+        name: Like Publication
+        meta:
+          id: req_83d098b2b3f048178b424eb8f0d2facd
+          created: 1758732296323
+          modified: 1758734378393
+          isPrivate: false
+          description: ""
+          sortKey: -1757569410673.75
+        method: PUT
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/publications/2/unlike
+        name: Unlike Publication
+        meta:
+          id: req_959efe92944540f0bbdaf7d152583673
+          created: 1758732307032
+          modified: 1758734997804
+          isPrivate: false
+          description: ""
+          sortKey: -1757523075219.6875
+        method: PUT
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:5000/users/1/publications
+        name: Get Publication By Id
+        meta:
+          id: req_5a10b0e5a51a44f4b3b78b9c58069068
+          created: 1758735014483
+          modified: 1758735045135
+          isPrivate: false
+          description: ""
+          sortKey: -1757615746127.8125
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        authentication:
+          type: bearer
+          token: "SEU_JWT_TOKEN_AQUI"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_3b976ad51dc24a4495423914f1aaac9b
+    created: 1756244858954
+    modified: 1756244858954
+environments:
+  name: Base Environment
+  meta:
+    id: env_6b9e5d81f6314682b0f882f0ff13f371
+    created: 1756244858951
+    modified: 1756244858951
+    isPrivate: false

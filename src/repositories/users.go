@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"api/src/models"
+
+	"api/src/utils"
 	"database/sql"
 	"fmt"
 )
@@ -112,6 +114,17 @@ func (u *users) GetUser(id uint64) (models.User, error) {
 
 }
 
+func (u *users) GetUserByEmail(userEmail string) (models.User, error) {
+
+	var user models.User
+	err := u.db.QueryRow("select id, password from users where email = ?", userEmail).Scan(&user.ID, &user.Password)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
+
 func (u *users) UpdateUser(id uint64, user models.User) (models.User, error) {
 
 	statement, err := u.db.Prepare("update users set name = ?, nickname = ?, email = ? where id = ?")
@@ -142,3 +155,129 @@ func (u *users) DeleteUser(id uint64) error {
 
 	return nil
 }
+
+
+func (u *users) FollowUser(followerId uint64, userId uint64) error {
+	statement, err := u.db.Prepare("insert ignore into followers (user_id, follower_id) values (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(userId, followerId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *users) UnfollowUser(followerId uint64, userId uint64) error {
+	statement, err := u.db.Prepare("delete from followers where user_id = ? and follower_id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(userId, followerId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *users) GetFollowers(userID uint64) ([]models.User, error) {
+
+	rows, err := u.db.Query(`
+	select users.id, users.name, users.nickname, users.email, users.createdAt
+	from users inner join followers on users.id = followers.follower_id
+	where followers.user_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (u *users) GetFollowing(userID uint64) ([]models.User, error) {
+
+	rows, err := u.db.Query(`
+	select users.id, users.name, users.nickname, users.email, users.createdAt
+	from users inner join followers on users.id = followers.user_id
+	where followers.follower_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (u *users) UpdatePassword(userID uint64, currentPassword string, newPassword string) error {
+
+	var storedPassword string
+	err := u.db.QueryRow("SELECT password FROM users WHERE id = ?", userID).Scan(&storedPassword)
+	if err != nil {
+		return err
+	}
+
+	if err = utils.CheckPassword(storedPassword, currentPassword); err != nil {
+		return err
+	}
+
+	statement, err := u.db.Prepare("Update users SET password = ? where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	newHash, err := utils.Hash(newPassword)
+	if err != nil {
+		return err
+	}
+
+	_, err = statement.Exec(string(newHash), userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
