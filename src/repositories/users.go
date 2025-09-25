@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"api/src/models"
+
 	"api/src/utils"
 	"database/sql"
 	"fmt"
@@ -155,6 +156,7 @@ func (u *users) DeleteUser(id uint64) error {
 	return nil
 }
 
+
 func (u *users) FollowUser(followerId uint64, userId uint64) error {
 	statement, err := u.db.Prepare("insert ignore into followers (user_id, follower_id) values (?, ?)")
 	if err != nil {
@@ -278,3 +280,4 @@ func (u *users) UpdatePassword(userID uint64, currentPassword string, newPasswor
 	return nil
 
 }
+

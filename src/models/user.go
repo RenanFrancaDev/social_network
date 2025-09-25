@@ -45,6 +45,7 @@ func (u *User) notEmpty(step string) error {
 
 	if u.Email == "" {
 		return errors.New("email is required")
+
 	}
 
 	if err := checkmail.ValidateFormat(u.Email); err != nil {

@@ -13,6 +13,7 @@ var (
 	StringConectionDB = ""
 	Port              = 0
 	SecretKey         []byte
+
 )
 
 func HandleConfig() {

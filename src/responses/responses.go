@@ -13,7 +13,6 @@ type ErrorResponse struct {
 // return response in JSON
 func JSON(w http.ResponseWriter, statusCode int, dados interface{}) {
 
-
 	if statusCode == http.StatusNoContent {
         w.WriteHeader(statusCode)
         return

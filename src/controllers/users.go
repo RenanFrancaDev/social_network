@@ -68,6 +68,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	
 	// w.Header().Set("Content-Type", "application/json")
 
@@ -201,7 +202,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// --------- //
-
+  
 	db, err := database.Connect()
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)

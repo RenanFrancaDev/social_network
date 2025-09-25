@@ -35,6 +35,8 @@ var userRoutes = []Router{
 		Method:      http.MethodPut,
 		Function:    controllers.UpdateUser,
 		RequireAuth: true,
+
+
 	},
 	{
 		URI:         "/user/{userID}",
